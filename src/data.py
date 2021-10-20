@@ -25,7 +25,7 @@ from src.coco_pipeline import COCOPipeline, DALICOCOIterator
 
 def get_train_loader(args, local_seed):
     train_annotate = os.path.join(args.data, "train.json")
-    train_coco_root = os.path.join(args.data, "train")
+    train_coco_root = os.path.join(args.data, "train/")
 
     train_pipe = COCOPipeline(args.batch_size, args.local_rank, train_coco_root,
                     train_annotate, args.N_gpu, num_threads=args.num_workers,
@@ -33,7 +33,7 @@ def get_train_loader(args, local_seed):
                     pad_output=False, seed=local_seed)
     train_pipe.build()
     test_run = train_pipe.schedule_run(), train_pipe.share_outputs(), train_pipe.release_outputs()
-    train_loader = DALICOCOIterator(train_pipe, 118287 / args.N_gpu)
+    train_loader = DALICOCOIterator(train_pipe, 100 / args.N_gpu)
     return train_loader
 
 
@@ -42,7 +42,7 @@ def get_val_dataset(args):
     val_trans = SSDTransformer(dboxes, (300, 300), val=True)
 
     val_annotate = os.path.join(args.data, "test.json")
-    val_coco_root = os.path.join(args.data, "test")
+    val_coco_root = os.path.join(args.data, "test/")
 
     val_coco = COCODetection(val_coco_root, val_annotate, val_trans)
     return val_coco
